@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="thymeleaf-3.0.15.RELEASE.jar">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="webjars/jquery/3.3.1/jquery.js"></script>
+
+
+</head>
+<body>
+
+    <form>
+        <input placeholder="id" type="text" id="login_id">
+        <input placeholder="password" type="password" id="login_password">
+        <button id="login_button">로그인</button>
+        <button id="post_list_butt">게시글 목록</button>
+
+    </form>
+
+</body>
+<script>
+    $("#post_list_butt").click((e)=>{
+        e.preventDefault()
+        location.replace("/posts")
+    })
+
+    $("#login_button").click((e)=>{
+        e.preventDefault()
+        var data = {
+            id : $("#login_id").val(),
+            password : $("#login_password").val(),
+        }
+
+
+        //
+         console.log(data)
+
+        $.ajax({
+            type:"GET",
+            url:"/api/login",
+            data:data,
+            success:(res)=>{
+                console.log(res)
+
+                if (res == true){
+                    alert("로그인 성공")
+                    document.cookie = "id="+data.id
+                        // +"; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT"
+
+                    // document.cookie = "user=; path=/; expires=Tue, 19 Jan 2000 03:14:07 GMT"
+
+                    location.replace("/posts")
+                }else {
+                    alert("없는 계정이거나 비밀번호가 틀립니다")
+                }
+            },
+            error:(err)=>{
+                console.log(err)
+            }
+        })
+
+
+    })
+
+
+
+</script>
+
+
+
+</html>

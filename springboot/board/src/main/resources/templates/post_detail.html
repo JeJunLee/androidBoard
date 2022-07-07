@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="thymeleaf-3.0.15.RELEASE.jar">
+<script src="/webjars/jquery/3.3.1/jquery.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1 id="post_id" th:text = "${post.id}"></h1>
+    <h1 id="member_id" th:text = "${post.member.id}"></h1>
+    <h1 th:text = "|제목 ${post.title}|"></h1>
+    <h1 th:text = "|글쓴이 ${post.member.name}|"></h1>
+    <p th:text = "|작성일 ${post.created}|"></p>
+    <p th:text = "|내용 ${post.content}|"></p>
+
+
+    <p th:text = "|추천 수 ${post.goods}|"></p>
+    <button id="post_good_butt">추천!!</button>
+    <button id="post_list_butt">홈</button>
+    <button id="post_delete_butt">삭제</button>
+
+</body>
+
+<script>
+    $("#post_good_butt").click((e)=>{
+        e.preventDefault()
+
+        postId = $("#post_id").text()
+
+        $.ajax({
+            type:"PATCH",
+            url:"/api/post/good/"+postId ,
+            success:(res) =>{
+                alert("추천 완료")
+                location.replace("/posts")
+            },
+            error:(err)=>{
+                console.log(err)
+            }
+        })
+
+
+
+    })
+
+
+    $("#post_delete_butt").click((e)=>{
+        e.preventDefault()
+
+        var data = {
+            postId : $("#post_id").text(),
+        }
+
+        console.log(data)
+
+
+        if( getCookie("id") == $("#member_id").text() ){
+
+
+            $.ajax({
+                type:"DELETE",
+                url:"/api/post",
+                data: data,
+                success:(res) =>{
+                    alert("삭제완료")
+                    location.replace("/posts")
+                },
+                error:(err)=>{
+                    console.log(err)
+                }
+            })
+
+
+
+        }else{
+            alert("작성자가 아님!")
+        }
+
+
+
+
+
+
+    })
+
+    $("#post_list_butt").click((e)=>{
+        e.preventDefault()
+        location.replace("/posts")
+    })
+
+    function getCookie(key){
+        key = new RegExp(key + '=([^;]*)'); // 쿠키들을 세미콘론으로 구분하는 정규표현식 정의
+        return key.test(document.cookie) ? unescape(RegExp.$1) : ''; // 인자로 받은 키에 해당하는 키가 있으면 값을 반환
+    }
+
+</script>
+</html>

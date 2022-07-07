@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="thymeleaf-3.0.15.RELEASE.jar">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="webjars/jquery/3.3.1/jquery.js"></script>
+</head>
+<body>
+
+    <h1 id="user_id">2</h1>
+
+    <button id="login_button">로그인 하기</button>
+
+    <table border="1px">
+        <thead>
+            <tr>
+                <th>게시글 번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>일반조회수</th>
+                <th>전문가조회수</th>
+                <th>추천수</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post:${postList}">
+            <td th:text = "${post.id}"></td>
+            <td th:onclick="|viewPost( ${post.id} )|" th:text = "${post.title}"></td>
+            <td th:text = "${post.member.name}"></td>
+            <td th:text = "${post.views}"></td>
+            <td th:text = "${post.majorViews}"></td>
+            <td th:text = "${post.goods}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+<button id="create_post_but">글 작성</button>
+
+
+</body>
+
+<script>
+
+    console.log(document.cookie)
+
+    $("#login_button").click((e)=>{
+        e.preventDefault()
+        document.cookie = "id=; path=/; expires=Tue, 19 Jan 2000 03:14:07 GMT"
+        location.replace("/")
+    })
+
+    $("#create_post_but").click((e)=>{
+        e.preventDefault()
+
+        if (getCookie("id")==""){
+            alert("로그인을 해 주세요!")
+        }else{
+            location.replace("/post")
+        }
+
+    })
+
+    if(getCookie("id")==""){
+        $("#login_button").text("로그인")
+        $("#user_id").text("로그인되어있지 않음")
+    }else{
+        $("#login_button").text("로그아웃")
+        $("#user_id").text(getCookie("id") + " 님 반갑습니다")
+    }
+
+    function getCookie(key){
+        key = new RegExp(key + '=([^;]*)'); // 쿠키들을 세미콘론으로 구분하는 정규표현식 정의
+        return key.test(document.cookie) ? unescape(RegExp.$1) : ''; // 인자로 받은 키에 해당하는 키가 있으면 값을 반환
+    }
+
+    function viewPost(id){
+        location.replace("/post/"+id)
+    }
+
+</script>
+</html>
